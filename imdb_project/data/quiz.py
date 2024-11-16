@@ -105,19 +105,19 @@ class QuizGame:
         upper_quartile = np.percentile(self.data['No_of_Votes'], 75)  # 75th percentile
 
         # Predefine the number of questions per difficulty
-        difficulty_counts = {'hard': 6, 'medium': 8, 'easy': 6}  # Total 20 questions
+        difficulty_counts = {'hard': 16, 'medium': 20, 'easy': 16}  # Total 50 questions
 
         # Track how many questions we have for each difficulty
         difficulty_count = {'hard': 0, 'medium': 0, 'easy': 0}
 
         # Predefine the number of questions per type (question types: release_year, director, genre, rating)
         question_types = ["release_year", "director", "genre", "rating"]
-        type_counts = {q_type: 5 for q_type in question_types}  # 5 questions of each type
+        type_counts = {q_type: 13 for q_type in question_types}  # 5 questions of each type
 
-        while sum(difficulty_count.values()) < 20:  # Keep generating until we have 20 questions
+        while sum(difficulty_count.values()) < 50:  # Keep generating until we have 50 questions
             for question_type, count in type_counts.items():
-                if sum(difficulty_count.values()) >= 20:
-                    break  # Stop if we already have 20 questions
+                if sum(difficulty_count.values()) >= 50:
+                    break  # Stop if we already have 50 questions
                 
                 # Generate the question based on the question type
                 if question_type == "release_year":
