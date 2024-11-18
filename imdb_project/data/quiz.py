@@ -112,7 +112,6 @@ class QuizGame:
 
     
     def create_question_pool(self):
-        """Generate a balanced pool of 20 unique questions with specific difficulty distribution based on No_of_Votes."""
         np.random.seed(self.random_state)
         questions = []
         used_indices = set()  # Track used data indices to avoid repetition
@@ -121,17 +120,17 @@ class QuizGame:
         lower_quartile = np.percentile(self.data['No_of_Votes'], 25) 
         upper_quartile = np.percentile(self.data['No_of_Votes'], 75)  
 
-        difficulty_counts = {'hard': 16, 'medium': 20, 'easy': 16}  
+        difficulty_counts = {'hard': 30, 'medium': 40, 'easy': 30}  
         difficulty_count = {'hard': 0, 'medium': 0, 'easy': 0}
 
         # Predefine the number of questions per type (question types: release_year, director, genre, rating)
         question_types = ["release_year", "director", "genre", "rating"]
         type_counts = {q_type: 13 for q_type in question_types}  
 
-        while sum(difficulty_count.values()) < 50:  # Keep generating until we have 50 questions
+        while sum(difficulty_count.values()) < 100:  # Keep generating until we have 100 questions
             for question_type, count in type_counts.items():
-                if sum(difficulty_count.values()) >= 50:
-                    break  # Stop if we already have 50 questions
+                if sum(difficulty_count.values()) >= 100:
+                    break  # Stop if we already have 100 questions
                 
                 # Generate the question based on the question type
                 if question_type == "release_year":
