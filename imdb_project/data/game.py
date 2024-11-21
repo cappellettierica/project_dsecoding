@@ -2,10 +2,10 @@ import numpy as np
 import random
 from data import DataHandler
 from retrieval import RandomRetrieval
-from quiz import questions  # Importing the list of predefined questions
+from quiz import questions  # Assuming 'questions' is a predefined list
 from scoring import Scoring
 import ipywidgets as widgets
-from IPython.display import display, clear_output
+from IPython.display import display, clear_output, HTML
 
 
 class Quiz_Game:
@@ -45,7 +45,7 @@ class Quiz_Game:
 
     def display_question(self, question, question_idx):
         # Create a label to display the question above the dropdown
-        question_label = widgets.HTML(value=f"<b>Q{question_idx + 1}: {question['question']}</b>")
+        question_label = widgets.HTML(value=f"<b style='color:#4CAF50;'>Q{question_idx + 1}: {question['question']}</b>")
 
         # Create a dropdown for selecting answers
         options_dropdown = widgets.Dropdown(
@@ -68,7 +68,7 @@ class Quiz_Game:
             self.answer_widgets.append(question_widget)  # Keep track of answers
 
         # Create the submit button to submit all answers at once
-        submit_button = widgets.Button(description="⭐SUBMIT⭐")
+        submit_button = widgets.Button(description="⭐SUBMIT⭐", button_style='success')
         submit_button.on_click(self.submit_answers)  # Link button click to submit method
         display(*display_questions)  # Display each question and widget
         display(submit_button)
@@ -101,16 +101,19 @@ class Quiz_Game:
             elif question['difficulty'] == 'hard':
                 self.hard_scores.append(self.hard_scores[-1] + score)
 
-            # Generate feedback for this question
+            # Generate feedback for this question with emojis and difficulty
+            result = f"<span style='color:green; font-weight:bold;'>You were correct!! 😊</span>" if correct else f"<span style='color:red; font-weight:bold;'>You are wrong 😢</span>"
             self.feedback.append({
                 "question": question["question"],
                 "your_answer": question['options'][selected_answer_idx] if selected_answer_idx is not None else "No Answer",
                 "correct_answer": question['options'][question['correct_answer_index']],
-                "result": "You were correct!! 😊" if correct else "You ware wrong 😢",
-                "score": score
+                "result": result,
+                "score": score,
+                "difficulty": question['difficulty']  # Storing the difficulty level
             })
 
-        print(f"Your final score is: {self.score}")
+        print(f"<b style='font-size:20px; color:#4CAF50;'>Your final score is: {self.score}</b>")
+        display(HTML(f"<b style='font-size:20px; color:#4CAF50;'>Your final score is: {self.score}</b>"))
 
         # Display detailed feedback
         self.display_feedback()
@@ -120,13 +123,19 @@ class Quiz_Game:
         scoring.plot_scores()
 
     def display_feedback(self):
+        feedback_html = ""
         for idx, item in enumerate(self.feedback):
-            print(f"Q{idx + 1}: {item['question']}")
-            print(f"  Your Answer: {item['your_answer']}")
-            print(f"  Correct Answer: {item['correct_answer']}")
-            print(f"  Result: {item['result']}")
-            print(f"  Score: {item['score']}")
-            print("-" * 40)
+            feedback_html += f"""
+            <div style='padding: 10px; border: 2px solid #ccc; margin: 5px;'>
+                <b style='color:#3b5998;'>Q{idx + 1}: {item['question']}</b><br>
+                <p style='color:#ADD8E6;'>This question was {item['difficulty'].capitalize()}</p>  <!-- Displaying difficulty level -->
+                <b>Your Answer:</b> {item['your_answer']}<br>
+                <b>Correct Answer:</b> {item['correct_answer']}<br>
+                <b>Result:</b> {item['result']}<br>
+                <b>Score:</b> {item['score']} points
+            </div>
+            """
+        display(HTML(feedback_html))
 
     def check_answer(self, answer, correct_index):
         return int(answer) == correct_index
@@ -135,6 +144,3 @@ class Quiz_Game:
         base_score = 10  # Base score for medium difficulty
         difficulty_multiplier = {"easy": 0.5, "medium": 1, "hard": 1.5}  # Score multipliers
         return int(base_score * difficulty_multiplier[question['difficulty']])
-
-
-
