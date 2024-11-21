@@ -11,15 +11,15 @@ class Scoring:
         
         # Plot easy scores
         if self.easy_scores:
-            plt.plot(self.easy_scores, label='Easy Scores', linestyle='--', marker='x')
+            plt.plot(self.easy_scores, label='Easy Scores', linestyle='-', marker='x')
         
         # Plot medium scores
         if self.medium_scores:
-            plt.plot(self.medium_scores, label='Medium Scores', linestyle='-.', marker='s')
+            plt.plot(self.medium_scores, label='Medium Scores', linestyle='-', marker='s')
         
         # Plot hard scores
         if self.hard_scores:
-            plt.plot(self.hard_scores, label='Hard Scores', linestyle=':', marker='^')
+            plt.plot(self.hard_scores, label='Hard Scores', linestyle='-', marker='^')
         
         plt.title('Score Breakdown', fontsize=16)
         plt.xlabel('Game', fontsize=14)
