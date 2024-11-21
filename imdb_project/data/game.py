@@ -23,6 +23,7 @@ class Quiz_Game:
         self.hard_scores = []  # Cumulative scores for hard questions
         self.selected_questions = self.select_questions_by_difficulty()
         self.user_answers = []  # Store answers for all questions
+        self.feedback = []  # To store feedback for each question
 
     def select_questions_by_difficulty(self):
         easy_questions = [q for q in self.questions if q['difficulty'] == "easy"]
@@ -75,8 +76,9 @@ class Quiz_Game:
     def submit_answers(self, button):
         clear_output(wait=True)
         self.score = 0
+        self.feedback = []
 
-        # Initialize cumulative scores if empty
+        # Initialize cumulative scores
         if not self.easy_scores:
             self.easy_scores.append(0)
         if not self.medium_scores:
@@ -84,26 +86,47 @@ class Quiz_Game:
         if not self.hard_scores:
             self.hard_scores.append(0)
 
-        # Collect all answers
+        # Collect answers and generate feedback
         for idx, question in enumerate(self.selected_questions):
             selected_answer_idx = self.answer_widgets[idx].value
-            if self.check_answer(selected_answer_idx, question['correct_answer_index']):
-                score = self.calculate_score(question)
-                self.score += score
+            correct = self.check_answer(selected_answer_idx, question['correct_answer_index'])
+            score = self.calculate_score(question) if correct else 0
+            self.score += score
 
-                # Update cumulative scores
-                if question['difficulty'] == 'easy':
-                    self.easy_scores.append(self.easy_scores[-1] + score)
-                elif question['difficulty'] == 'medium':
-                    self.medium_scores.append(self.medium_scores[-1] + score)
-                elif question['difficulty'] == 'hard':
-                    self.hard_scores.append(self.hard_scores[-1] + score)
+            # Update cumulative scores
+            if question['difficulty'] == 'easy':
+                self.easy_scores.append(self.easy_scores[-1] + score)
+            elif question['difficulty'] == 'medium':
+                self.medium_scores.append(self.medium_scores[-1] + score)
+            elif question['difficulty'] == 'hard':
+                self.hard_scores.append(self.hard_scores[-1] + score)
+
+            # Generate feedback for this question
+            self.feedback.append({
+                "question": question["question"],
+                "your_answer": question['options'][selected_answer_idx] if selected_answer_idx is not None else "No Answer",
+                "correct_answer": question['options'][question['correct_answer_index']],
+                "result": "You were correct!! 😊" if correct else "You ware wrong 😢",
+                "score": score
+            })
 
         print(f"Your final score is: {self.score}")
+
+        # Display detailed feedback
+        self.display_feedback()
 
         # Display cumulative score breakdown
         scoring = Scoring(self.easy_scores, self.medium_scores, self.hard_scores)
         scoring.plot_scores()
+
+    def display_feedback(self):
+        for idx, item in enumerate(self.feedback):
+            print(f"Q{idx + 1}: {item['question']}")
+            print(f"  Your Answer: {item['your_answer']}")
+            print(f"  Correct Answer: {item['correct_answer']}")
+            print(f"  Result: {item['result']}")
+            print(f"  Score: {item['score']}")
+            print("-" * 40)
 
     def check_answer(self, answer, correct_index):
         return int(answer) == correct_index
