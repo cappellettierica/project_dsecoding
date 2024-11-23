@@ -1,8 +1,7 @@
 import numpy as np
 import random
 from data import DataHandler
-from retrieval import RandomRetrieval
-from quiz import questions  # Assuming 'questions' is a predefined list
+from quiz import questions  
 from scoring import Scoring
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML

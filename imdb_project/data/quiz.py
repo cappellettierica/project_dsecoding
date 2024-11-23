@@ -1,14 +1,11 @@
 import numpy as np
 from data import DataHandler
-from retrieval import RandomRetrieval
 
 class QuizGame:
     def __init__(self, n_options=4, difficulty='medium', random_state=None):
         # initialize data handler to load the movie dataset
         self.data_handler = DataHandler()
         self.data = self.data_handler.get_data()
-        # initialize retriever for random options in the quiz
-        self.retriever = RandomRetrieval(n=n_options - 1, random_state=random_state)
         self.n_options = n_options
         self.difficulty = difficulty
         self.random_state = random_state
