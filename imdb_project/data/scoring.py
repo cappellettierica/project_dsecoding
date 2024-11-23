@@ -7,33 +7,34 @@ class Scoring:
         self.hard_scores = hard_scores
 
     def plot_scores(self):
-        plt.figure(figsize=(6, 3))
+        plt.figure(figsize=(8, 4))
         
         # Plot easy scores
         if self.easy_scores:
-            plt.plot(self.easy_scores, label='Easy Scores', linestyle='-', marker='x')
+            easy_score = self.easy_scores[-1]  # Last score in easy_scores list
+            plt.plot(self.easy_scores, label=f'Easy Scores ({easy_score}/15)', linestyle='-', marker='x')
         
         # Plot medium scores
         if self.medium_scores:
-            plt.plot(self.medium_scores, label='Medium Scores', linestyle='-', marker='s')
+            medium_score = self.medium_scores[-1]  # Last score in medium_scores list
+            plt.plot(self.medium_scores, label=f'Medium Scores ({medium_score}/30)', linestyle='-', marker='s')
         
         # Plot hard scores
         if self.hard_scores:
-            plt.plot(self.hard_scores, label='Hard Scores', linestyle='-', marker='^')
+            hard_score = self.hard_scores[-1]  # Last score in hard_scores list
+            plt.plot(self.hard_scores, label=f'Hard Scores ({hard_score}/45)', linestyle='-', marker='^')
         
-        plt.title('Score Breakdown', fontsize=16)
-        plt.xlabel('Game', fontsize=14)
-        plt.ylabel('Score', fontsize=14)
+        plt.title('Score Breakdown', fontsize=14)
+        plt.xlabel('Game', fontsize=10)
+        plt.ylabel('Score', fontsize=10)
         plt.grid(True)
         
-        # Check if there are any labels to include in the legend
+        # Show the legend with final scores included
         handles, labels = plt.gca().get_legend_handles_labels()
         if labels:
             plt.legend(fontsize=12)
         
         plt.show()
-
-
 
 
 

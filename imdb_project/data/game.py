@@ -3,6 +3,7 @@ import random
 from data import DataHandler
 from quiz import questions  
 from scoring import Scoring
+from percentage_contribution import Percentage
 import ipywidgets as widgets
 from IPython.display import display, clear_output, HTML
 
@@ -138,6 +139,9 @@ class Quiz_Game:
         # Display cumulative score breakdown
         scoring = Scoring(self.easy_scores, self.medium_scores, self.hard_scores)
         scoring.plot_scores()
+
+        percentage = Percentage(self.easy_scores, self.medium_scores, self.hard_scores)
+        percentage.plot_percentage_contribution()
 
         # Show replay or quit options
         self.show_replay_options()
