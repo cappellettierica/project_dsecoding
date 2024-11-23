@@ -7,7 +7,7 @@ class Scoring:
         self.hard_scores = hard_scores
 
     def plot_scores(self):
-        plt.figure(figsize=(8, 4))
+        plt.figure(figsize=(6, 3))
         
         # Plot easy scores
         if self.easy_scores:
