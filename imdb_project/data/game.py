@@ -44,7 +44,6 @@ class Quiz_Game:
         return selected_questions
 
     def display_welcome_message(self):
-        """Display the welcome message at the start of the game."""
         welcome_message = widgets.HTML(
             value="""
             <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
@@ -122,7 +121,7 @@ class Quiz_Game:
                 self.hard_scores.append(self.hard_scores[-1] + score)
 
             # Generate feedback for this question with emojis and difficulty
-            result = f"<span style='color:green; font-weight:bold;'>You were correct!! 😊</span>" if correct else f"<span style='color:red; font-weight:bold;'>You are wrong 😢</span>"
+            result = f"<span style='color:green; font-weight:bold;'>You were correct! 😊</span>" if correct else f"<span style='color:red; font-weight:bold;'>You were wrong 😢</span>"
             self.feedback.append({
                 "question": question["question"],
                 "your_answer": question['options'][selected_answer_idx] if selected_answer_idx is not None else "No Answer",
@@ -132,7 +131,7 @@ class Quiz_Game:
                 "difficulty": question['difficulty']  # Storing the difficulty level
             })
 
-        display(HTML(f"<b style='font-size:20px; color:#4CAF50;'>Your final score is: {self.score}</b>"))
+        display(HTML(f"<b style='font-size:20px; color:#4CAF50;'>Your final score is: {self.score}/90</b>"))
 
         # Display detailed feedback
         self.display_feedback()
@@ -140,6 +139,36 @@ class Quiz_Game:
         # Display cumulative score breakdown
         scoring = Scoring(self.easy_scores, self.medium_scores, self.hard_scores)
         scoring.plot_scores()
+
+        # Show replay or quit options
+        self.show_replay_options()
+
+    def show_replay_options(self):
+        # Display buttons to let the player decide to play again or quit
+        replay_button = widgets.Button(description="▶️Play Again▶️", button_style='info')
+        quit_button = widgets.Button(description="⏹️Quit⏹️", button_style='danger')
+        # set button callbacks
+        replay_button.on_click(self.replay_game)
+        quit_button.on_click(self.quit_game)
+        button_box = widgets.HBox([replay_button, quit_button])
+        display(button_box)
+
+    def replay_game(self, button):
+        # to reset the game and play again
+        clear_output(wait=True)
+        self.score = 0
+        self.easy_scores = []
+        self.medium_scores = []
+        self.hard_scores = []
+        self.selected_questions = self.select_questions_by_difficulty()
+        self.user_answers = []
+        self.feedback = []
+        self.play()
+
+    def quit_game(self, button):
+        # thank-you message and end the game
+        clear_output(wait=True)
+        display(HTML("<h2 style='color:#4CAF50;'>Thank you for playing the IMDb Quiz Game!🍿</h2>"))
 
     def display_feedback(self):
         feedback_html = ""
@@ -162,5 +191,4 @@ class Quiz_Game:
     def calculate_score(self, question):
         base_score = 10  # Base score for medium difficulty
         difficulty_multiplier = {"easy": 0.5, "medium": 1, "hard": 1.5}  # Score multipliers
-        return int(base_score * difficulty_multiplier[question['difficulty']])
-
+        return int(base_score * difficulty_multiplier[question["difficulty"]])
