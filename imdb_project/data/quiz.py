@@ -87,28 +87,48 @@ class QuizGame:
 
         return question, formatted_options, correct_answer_index, correct_movie.name
 
-    def generate_rating_question(self, used_indices):
+    def generate_star_question(self, used_indices):
         filtered_data = self.data
         available_data = filtered_data[~filtered_data.index.isin(used_indices)]
         if available_data.empty:
             raise ValueError("No more data available to generate unique questions.")
 
+        # Select a correct movie randomly
         correct_movie = available_data.sample(1, random_state=self.random_state).iloc[0]
         used_indices.add(correct_movie.name)
 
-        question = f"What is the IMDb rating of the movie '{correct_movie['Series_Title']}'?"
-    
-        # Get unique ratings for the incorrect options
-        unique_ratings = available_data['IMDB_Rating'].unique()
-        while len(unique_ratings) < self.n_options:
-            unique_ratings = np.append(unique_ratings, np.random.choice(unique_ratings))
-        options = list(np.random.choice(unique_ratings, self.n_options - 1, replace=False)) + [correct_movie['IMDB_Rating']]
-        options = list(set(options))  
-        np.random.shuffle(options)  
+        # Extract stars from the correct movie
+        stars = [correct_movie['Star1'], correct_movie['Star2'], correct_movie['Star3'], correct_movie['Star4']]
+        if not stars:
+            raise ValueError(f"No valid stars available for movie '{correct_movie['Series_Title']}'.")
+
+        # Pick the correct star
+        correct_star = np.random.choice(stars)
+
+        # Get unique stars from other movies for incorrect options
+        all_stars = set(available_data[['Star1', 'Star2', 'Star3', 'Star4']].stack().dropna()) - set(stars)  # Exclude stars of the correct movie
+
+        # Ensure there are enough options
+        while len(all_stars) < self.n_options - 1:
+            all_stars.add(f"Random Star {np.random.randint(1, 100)}")
+
+        incorrect_options = list(np.random.choice(list(all_stars), self.n_options - 1, replace=False))
+        options = incorrect_options + [correct_star]
+
+        # Shuffle the options
+        np.random.shuffle(options)
+
+        # Format the options for display
         formatted_options = [f"{idx + 1}. {opt}" for idx, opt in enumerate(options)]
-        correct_answer_index = options.index(correct_movie['IMDB_Rating'])
+
+        # Find the correct answer's index in the shuffled options
+        correct_answer_index = options.index(correct_star)
+
+        # Construct the question
+        question = f"Which of the following actors/actresses starred in the movie '{correct_movie['Series_Title']}'?"
 
         return question, formatted_options, correct_answer_index, correct_movie.name
+
 
     
     def create_question_pool(self):
@@ -124,7 +144,7 @@ class QuizGame:
         difficulty_count = {'hard': 0, 'medium': 0, 'easy': 0}
 
         # Predefine the number of questions per type (question types: release_year, director, genre, rating)
-        question_types = ["release_year", "director", "genre", "rating"]
+        question_types = ["release_year", "director", "genre", "star"]
         type_counts = {q_type: 13 for q_type in question_types}  
 
         while sum(difficulty_count.values()) < 100:  # Keep generating until we have 100 questions
@@ -139,8 +159,8 @@ class QuizGame:
                     question, options, correct_answer_index, index = self.generate_director_question(used_indices)
                 elif question_type == "genre":
                     question, options, correct_answer_index, index = self.generate_genre_question(used_indices)
-                elif question_type == "rating":
-                    question, options, correct_answer_index, index = self.generate_rating_question(used_indices)
+                elif question_type == "star":
+                    question, options, correct_answer_index, index = self.generate_star_question(used_indices)
 
                 # Get the No_of_Votes for the movie
                 no_of_votes = self.data.loc[index, 'No_of_Votes']
