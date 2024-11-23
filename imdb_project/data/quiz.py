@@ -35,7 +35,7 @@ class QuizGame:
         options = list(set(options))  # Removes any duplicates
         np.random.shuffle(options) # Shuffle option
         #format the options for display
-        formatted_options = [f"{idx + 1}. {opt}" for idx, opt in enumerate(options)]
+        formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
         correct_answer_index =options.index(correct_movie['Released_Year'])
          
         return question, formatted_options, correct_answer_index, correct_movie.name 
@@ -58,7 +58,7 @@ class QuizGame:
         np.random.shuffle(options)
 
         correct_answer_index = options.index(correct_movie['Director'])
-        formatted_options = [f"{idx + 1}. {opt}" for idx, opt in enumerate(options)]
+        formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
     
 
         return question, formatted_options, correct_answer_index, correct_movie.name 
@@ -81,7 +81,7 @@ class QuizGame:
         np.random.shuffle(options)
 
         correct_answer_index = options.index(correct_movie['Genre'])
-        formatted_options = [f"{idx + 1}. {opt}" for idx, opt in enumerate(options)]
+        formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
         
         
 
@@ -119,7 +119,7 @@ class QuizGame:
         np.random.shuffle(options)
 
         # Format the options for display
-        formatted_options = [f"{idx + 1}. {opt}" for idx, opt in enumerate(options)]
+        formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
 
         # Find the correct answer's index in the shuffled options
         correct_answer_index = options.index(correct_star)
