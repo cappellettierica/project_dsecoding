@@ -33,7 +33,3 @@ Each question's score is based on its difficulty level:
 - **Hard**: 15 points
 
 The total score is the sum of the points for all correctly answered questions. Incorrect answers will not deduct points.
-
-
-
-
