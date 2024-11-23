@@ -10,7 +10,7 @@ class DataHandler:
         try:
             self.data = pd.read_csv(self.filepath)
             #self.data.drop(columns=['Poster_Link', 'Meta_score'], inplace=True)
-            self.data.dropna(subset=['Series_Title', 'Genre', 'Director', 'Released_Year'], inplace=True)
+            self.data.dropna(subset=['Series_Title', 'Genre', 'Director', 'Released_Year', 'Star1', 'Star2', 'Star3', 'Star4'], inplace=True)
             return self.data
         except FileNotFoundError:
             print("File not found. Please check the file path.")
