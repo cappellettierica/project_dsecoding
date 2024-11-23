@@ -9,7 +9,7 @@ class DataHandler:
     def load_data(self):
         try:
             self.data = pd.read_csv(self.filepath)
-            #self.data.drop(columns=['Poster_Link', 'Meta_score'], inplace=True)
+            self.data.drop(columns=['Poster_Link', 'Meta_score', 'IMDB_Rating', 'Certificate', 'Runtime', 'Gross'], inplace=True)
             self.data.dropna(subset=['Series_Title', 'Genre', 'Director', 'Released_Year', 'Star1', 'Star2', 'Star3', 'Star4'], inplace=True)
             return self.data
         except FileNotFoundError:
