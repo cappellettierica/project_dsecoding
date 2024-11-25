@@ -43,24 +43,6 @@ class Quiz_Game:
         random.shuffle(selected_questions)
         return selected_questions
 
-    def display_welcome_message(self):
-        welcome_message = widgets.HTML(
-            value="""
-            <div style='font-family: Arial, sans-serif; line-height: 1.6;'>
-                <h2><b>Welcome to the IMDb Movie Quiz Game 🎬!</b></h2>
-                <p>In this game, you’ll answer 9 questions about movies. The questions can be easy, medium, or hard, depending on the movie's popularity 😎.</p>
-                <ul>
-                    <li><b>3 Easy Questions</b> 🙂: Earn <b>5 points</b> for each correct answer!</li>
-                    <li><b>3 Medium Questions</b> 😐: Earn <b>10 points</b> for each correct answer!</li>
-                    <li><b>3 Hard Questions</b> 🙁: Earn <b>15 points</b> for each correct answer!</li>
-                </ul>
-                <p>If you answer incorrectly, you’ll score <b>0 points</b> ❌.</p>
-                <p>At the end of the game, a graph will display your performance across the difficulty levels. Good luck! 🎉</p>
-            </div>
-            """
-        )
-        display(welcome_message)
-
     def display_question(self, question, question_idx):
         # Create a label to display the question above the dropdown
         question_label = widgets.HTML(value=f"<b style='color:#4CAF50;'>Q{question_idx + 1}: {question['question']}</b>")
@@ -75,7 +57,6 @@ class Quiz_Game:
         return question_label, options_dropdown
 
     def play(self):
-        self.display_welcome_message()  # Display the welcome message
         self.answer_widgets = []  # Store widgets for each question's answer
         display_questions = []  # Store the question widgets
 
@@ -120,7 +101,6 @@ class Quiz_Game:
             elif question['difficulty'] == 'hard':
                 self.hard_scores.append(self.hard_scores[-1] + score)
 
-            # Generate feedback for this question with emojis and difficulty
             result = f"<span style='color:green; font-weight:bold;'>You were correct! 😊</span>" if correct else f"<span style='color:red; font-weight:bold;'>You were wrong 😢</span>"
             self.feedback.append({
                 "question": question["question"],
@@ -133,10 +113,9 @@ class Quiz_Game:
 
         display(HTML(f"<b style='font-size:20px; color:#4CAF50;'>Your final score is: {self.score}/90</b>"))
 
-        # Display detailed feedback
         self.display_feedback()
 
-        # Display cumulative score breakdown
+        # Graphs
         scoring = Scoring(self.easy_scores, self.medium_scores, self.hard_scores)
         scoring.plot_scores()
 

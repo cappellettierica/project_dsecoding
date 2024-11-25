@@ -3,8 +3,7 @@ from data import DataHandler
 
 class QuizGame:
     def __init__(self, n_options=4, difficulty='medium', random_state=None):
-        # initialize data handler to load the movie dataset
-        self.data_handler = DataHandler()
+        self.data_handler = DataHandler() # initialize data handler to load the movie dataset
         self.data = self.data_handler.get_data()
         self.n_options = n_options
         self.difficulty = difficulty
@@ -56,7 +55,6 @@ class QuizGame:
 
         correct_answer_index = options.index(correct_movie['Director'])
         formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
-    
 
         return question, formatted_options, correct_answer_index, correct_movie.name 
 
@@ -79,8 +77,6 @@ class QuizGame:
 
         correct_answer_index = options.index(correct_movie['Genre'])
         formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
-        
-        
 
         return question, formatted_options, correct_answer_index, correct_movie.name
 
@@ -90,43 +86,32 @@ class QuizGame:
         if available_data.empty:
             raise ValueError("No more data available to generate unique questions.")
 
-        # Select a correct movie randomly
-        correct_movie = available_data.sample(1, random_state=self.random_state).iloc[0]
+        correct_movie = available_data.sample(1, random_state=self.random_state).iloc[0] # Select a correct movie randomly
         used_indices.add(correct_movie.name)
 
-        # Extract stars from the correct movie
-        stars = [correct_movie['Star1'], correct_movie['Star2'], correct_movie['Star3'], correct_movie['Star4']]
+        stars = [correct_movie['Star1'], correct_movie['Star2'], correct_movie['Star3'], correct_movie['Star4']] # Extract stars from the correct movie
         if not stars:
             raise ValueError(f"No valid stars available for movie '{correct_movie['Series_Title']}'.")
 
-        # Pick the correct star
         correct_star = np.random.choice(stars)
 
         # Get unique stars from other movies for incorrect options
         all_stars = set(available_data[['Star1', 'Star2', 'Star3', 'Star4']].stack().dropna()) - set(stars)  # Exclude stars of the correct movie
 
-        # Ensure there are enough options
-        while len(all_stars) < self.n_options - 1:
+        while len(all_stars) < self.n_options - 1: # Ensure there are enough options
             all_stars.add(f"Random Star {np.random.randint(1, 100)}")
 
         incorrect_options = list(np.random.choice(list(all_stars), self.n_options - 1, replace=False))
         options = incorrect_options + [correct_star]
 
-        # Shuffle the options
         np.random.shuffle(options)
 
-        # Format the options for display
         formatted_options = [f"{opt}" for idx, opt in enumerate(options)]
-
-        # Find the correct answer's index in the shuffled options
         correct_answer_index = options.index(correct_star)
 
-        # Construct the question
         question = f"Which of the following actors/actresses starred in the movie '{correct_movie['Series_Title']}'?"
 
         return question, formatted_options, correct_answer_index, correct_movie.name
-
-
     
     def create_question_pool(self):
         np.random.seed(self.random_state)
@@ -140,8 +125,7 @@ class QuizGame:
         difficulty_counts = {'hard': 30, 'medium': 40, 'easy': 30}  
         difficulty_count = {'hard': 0, 'medium': 0, 'easy': 0}
 
-        # Predefine the number of questions per type (question types: release_year, director, genre, rating)
-        question_types = ["release_year", "director", "genre", "star"]
+        question_types = ["release_year", "director", "genre", "star"] # Predefine the number of questions per type 
         type_counts = {q_type: 13 for q_type in question_types}  
 
         while sum(difficulty_count.values()) < 100:  # Keep generating until we have 100 questions
@@ -149,7 +133,6 @@ class QuizGame:
                 if sum(difficulty_count.values()) >= 100:
                     break  # Stop if we already have 100 questions
                 
-                # Generate the question based on the question type
                 if question_type == "release_year":
                     question, options, correct_answer_index, index = self.generate_release_year_question(used_indices)
                 elif question_type == "director":
@@ -159,8 +142,7 @@ class QuizGame:
                 elif question_type == "star":
                     question, options, correct_answer_index, index = self.generate_star_question(used_indices)
 
-                # Get the No_of_Votes for the movie
-                no_of_votes = self.data.loc[index, 'No_of_Votes']
+                no_of_votes = self.data.loc[index, 'No_of_Votes']  # Get the No_of_Votes for the movie
 
                 # Determine the difficulty based on the percentiles
                 if no_of_votes < lower_quartile:
@@ -170,9 +152,8 @@ class QuizGame:
                 else:
                     difficulty = 'medium'
 
-                # Only add the question if we haven't reached the max count for that difficulty
                 if difficulty_count[difficulty] < difficulty_counts[difficulty]:
-                    questions.append({
+                    questions.append({ # Only add the question if we haven't reached the max count for that difficulty
                         "question": question,
                         "options": options,
                         "correct_answer_index": correct_answer_index,
@@ -182,7 +163,6 @@ class QuizGame:
 
         np.random.shuffle(questions)  # Shuffle the final set of questionsto mix the question types and difficulties
         return questions
-
 
     def get_random_question(self):
         """Retrieve a random question from the pool."""
