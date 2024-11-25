@@ -9,17 +9,14 @@ class Scoring:
     def plot_scores(self):
         plt.figure(figsize=(8, 4))
         
-        # Plot easy scores
         if self.easy_scores:
             easy_score = self.easy_scores[-1]  # Last score in easy_scores list
             plt.plot(self.easy_scores, label=f'Easy Scores ({easy_score}/15)', linestyle='-', marker='x')
         
-        # Plot medium scores
         if self.medium_scores:
             medium_score = self.medium_scores[-1]  # Last score in medium_scores list
             plt.plot(self.medium_scores, label=f'Medium Scores ({medium_score}/30)', linestyle='-', marker='s')
-        
-        # Plot hard scores
+    
         if self.hard_scores:
             hard_score = self.hard_scores[-1]  # Last score in hard_scores list
             plt.plot(self.hard_scores, label=f'Hard Scores ({hard_score}/45)', linestyle='-', marker='^')
@@ -29,7 +26,6 @@ class Scoring:
         plt.ylabel('Score', fontsize=10)
         plt.grid(True)
         
-        # Show the legend with final scores included
         handles, labels = plt.gca().get_legend_handles_labels()
         if labels:
             plt.legend(fontsize=12)

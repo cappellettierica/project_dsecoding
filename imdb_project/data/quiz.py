@@ -126,7 +126,7 @@ class QuizGame:
         difficulty_count = {'hard': 0, 'medium': 0, 'easy': 0}
 
         question_types = ["release_year", "director", "genre", "star"] # Predefine the number of questions per type 
-        type_counts = {q_type: 13 for q_type in question_types}  
+        type_counts = {q_type: 25 for q_type in question_types}  
 
         while sum(difficulty_count.values()) < 100:  # Keep generating until we have 100 questions
             for question_type, count in type_counts.items():
